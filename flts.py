@@ -189,3 +189,33 @@ Hide details"""
 
 """['4Jan', '5Jan', '5Jan']"""
 """['12Jan', '13Jan']"""
+
+vuelo_pap = """
+San Salvador to Port-au-Prince
+7:20pm - 10:21am (14h 1m, 1 stop)7:20pm through 10:21am (14h 1m, 1 stop)+1Arrives Tue, Feb 28
+
+Multiple airlines • Mon, Feb 27
+Departure7:20pm - San Salvador
+El Salvador Intl. (SAL)
+
+4h 40m flight
+Avianca 570 operated by TACA INTERNATIONAL AIRLINES - TACA
+Airbus A320Power on this flight
+Economy/Coach (O)
+Arrival1:00am - New York
+John F. Kennedy Intl. (JFK)
+
+Arrives Tue, Feb 28
+Layover: 5h 30m in New York
+Departure00:30am - New York
+John F. Kennedy Intl. (JFK)
+
+3h 51m flight
+JetBlue Airways 935
+Airbus A320Power on this flight
+Economy/Coach (P)
+Arrival10:21am - Port-au-Prince
+au-Prince (PAP-Toussaint Louverture Intl. (PAP)
+
+"""
+"27Feb 28Feb"
