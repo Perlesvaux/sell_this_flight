@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title></title>
 
-
+    <script defer src="./pyodide.js"></script>
     <script defer src="./pyscript.js"></script>
     <link rel="stylesheet" href="./pyscript.css">
 
@@ -46,6 +46,7 @@ def count(*args, **kwargs):
 
 def clearing(*args, **kwargs):
   _text.clear()
+  _output.clear()
 
 def sech(*args, **kwargs):
   _output.write('y ahora todo cambio D:')
