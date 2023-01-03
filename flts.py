@@ -219,3 +219,61 @@ au-Prince (PAP-Toussaint Louverture Intl. (PAP)
 
 """
 "27Feb 28Feb"
+
+
+firefox = """
+Avianca • Wed, Feb 8
+Departure8:45am - San Salvador
+
+El Salvador Intl. (SAL)
+2h 50m flightAvianca 383 operated by TACA INTERNATIONAL AIRLINES - TACA
+Airbus A320
+Power on this flight
+Economy/Coach (S)
+Arrival12:35pm - Bogotá
+
+El Dorado Intl. (BOG)
+Layover: 10h 50m in Bogotá
+Departure11:25pm - Bogotá
+
+El Dorado Intl. (BOG)
+10h 10m flightAvianca 120 operated by AVIANCA
+Boeing 787-8
+Power on this flight
+Economy/Coach (S)
+Arrival2:35pm - London
+
+Heathrow (LHR)
+Arrives Thu, Feb 9
+"""
+
+
+vuelo_exp_uk = """
+San Salvador to London
+08:45 - 14:35 (23h 50m, 1 stop)08:45 through 14:35 (23h 50m, 1 stop)+1Arrives Thu, 9 Feb
+
+Avianca • Wed, 8 Feb
+Departure08:45 - San Salvador
+El Salvador Intl. (SAL)
+
+2h 50m flight
+Avianca 383 operated by TACA INTERNATIONAL AIRLINES - TACA
+Airbus A320Power on this flight
+Economy (S)
+Arrival12:35 - Bogotá
+El Dorado Intl. (BOG)
+
+Stopover: 10h 50m in Bogotá
+Departure23:25 - Bogotá
+El Dorado Intl. (BOG)
+
+10h 10m flight
+Avianca 120 operated by AVIANCA
+Boeing 787-8Power on this flight
+Economy (S)
+Arrival14:35 - London
+Heathrow (LHR)
+
+Arrives Thu, 9 Feb
+Hide details
+"""

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flts import vuelo_nonstop, vuelo_1stop, vuelo_con_escala, vuelo_3stop, vuelo_tbs, vuelo_longest
+from flts import vuelo_nonstop, vuelo_1stop, vuelo_con_escala, vuelo_3stop, vuelo_tbs, vuelo_longest, firefox, vuelo_pap, vuelo_exp_uk
 import re
 
 from datetime import datetime, date, timedelta
@@ -719,6 +719,7 @@ class sell_this_flight(object):
         _long_sell_format = []
         for i, val in enumerate(self.ordered_cos()):
             _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {self.ordered_dates()[i]} {self.ordered_citypairs()[i]} 1")
+
         _final_string = "\n".join(_long_sell_format)
 
         return(_final_string)
@@ -740,9 +741,9 @@ class sell_this_flight(object):
 
 
 if __name__=="__main__":
-    sold2nd = sell_this_flight(vuelo_longest)
-    print(sold2nd.result())
-    print(sold2nd.ordered_flights())
+    # sold2nd = sell_this_flight(vuelo_longest)
+    # print(sold2nd.result())
+    # print(sold2nd.ordered_flights())
     # print(sold2nd.ordered_cos())
     # print(sold2nd.ordered_citypairs())
     # print(sold2nd.ordered_dates())
@@ -750,16 +751,41 @@ if __name__=="__main__":
     sold3rd = sell_this_flight(vuelo_con_escala)
     print(sold3rd.result())
     print(sold3rd.ordered_flights())
-    # print(sold3rd.ordered_cos())
-    # print(sold3rd.ordered_citypairs())
-    # print(sold3rd.ordered_dates())
+    print(sold3rd.ordered_cos())
+    print(sold3rd.ordered_citypairs())
+    print(sold3rd.ordered_dates())
+    print(sold3rd._arrival)
+    print(sold3rd._departure)
 
-    _test2 = sell_this_flight(vuelo_3stop)
-    print(_test2.result())
-    print(_test2.ordered_flights())
+    # _test2 = sell_this_flight(vuelo_3stop)
+    # print(_test2.result())
+    # print(_test2.ordered_flights())
     # print(_test2.ordered_cos())
     # print(_test2.ordered_citypairs())
     # print(_test2.ordered_dates()) #should be ['12Jan', '12Jan', '12Jan']
+
+    _test_1=sell_this_flight(firefox) #fails because it displays flight as "flightAmerican Airlines" and this makes regex fail
+    #print(_test_1.result())
+    print(_test_1.ordered_flights())
+    print(_test_1.ordered_cos())
+    print(_test_1.ordered_citypairs())
+    print(_test_1.ordered_dates())
+
+    _test_2=sell_this_flight(vuelo_pap)
+    #print(_test_2.result())
+    print(_test_2.ordered_flights())
+    print(_test_2.ordered_cos())
+    print(_test_2.ordered_citypairs())
+    print(_test_2.ordered_dates())
+
+    _test_3=sell_this_flight(vuelo_exp_uk)
+    #print(_test_2.result())
+    print(_test_3.ordered_flights())
+    print(_test_3.ordered_cos())
+    print(_test_3.ordered_citypairs())
+    #print(_test_3.ordered_dates())
+
+
 
 
 
