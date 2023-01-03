@@ -129,6 +129,7 @@ class sell_this_flight(object):
         "Cyprus Airways":'CY',
         "Czech Airlines":'OK',
         "Delta Air Lines":'DL',
+        "Delta":'DL',
         "DHL Air":'D0',
         "DHL Aviation":'ES',
         "Eastern Airlines":'2D',

@@ -7,12 +7,7 @@ import re
 #converting STRING into DATE
 #print(datetime.strptime('01-02-2023', '%m-%d-%Y'))
 
-def rem_time(d):
-    s = ''
-    s = str(d.year) + '-' + str(d.month) + '-' + str(d.day)
-    return s
-
-"""
+{"""
 departure_date = '01-02-2023'
 # arrival_time = '17:50'
 # time_left_4_next = '12:20'
@@ -36,7 +31,7 @@ _next_flight_departure = next_flight_departure + timedelta(hours=16, minutes=0)
 print(_next_flight_departure)
 other_flight = _next_flight_departure + timedelta(hours=11, minutes=33)
 print(other_flight)
-"""
+"""}
 
 
 departure_date = '01-02-2023' #STRING
@@ -73,13 +68,15 @@ print(layover_m)
 
 
 
+"TODO: reduce params to only 3 → str, list, list"
+
 def next_day(first,  AH, AM,  LH, LM):
     initial = datetime.strptime(first, '%m-%d-%Y') #DATE
     posterior = []
 
-    for i, val in enumerate(LH):
+    for i, val in enumerate(LH): #limit is set by number of connections
         posterior.append(datetime.strftime(initial + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%m-%d-%Y')) #=Sum of date, arrival & connection time
-    #next = datetime.strftime(initial + timedelta(hours=17, minutes=50) + timedelta(hours=12, minutes=20), '%m-%d-%Y') #=Sum of date, arrival & connection time
+
     return posterior
 
 print(next_day(test1, arr_h, arr_m, layover_h, layover_m))
