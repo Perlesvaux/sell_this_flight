@@ -104,11 +104,9 @@ def next_day_1(first,  arrivals,  layovers):
 
     for i, val in enumerate(layovers): #limit is set by number of connections
         posterior.append(datetime.strftime(initial + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%m-%d-%Y')) #=Sum of date, arrival & connection time
-        #initial = posterior[i]
-        initial = datetime.strptime(posterior[i], '%m-%d-%Y')
-        #print(f"{AH[i]} {AM[i]}; {LH[i]} {LM[i]}")
+        initial = datetime.strptime(posterior[i], '%m-%d-%Y') #Next iteration's "initial" is updated
 
-    posterior.sort()
+    posterior.sort() #I think it's useless here...
     return posterior
 
 # print(next_day_1(test1, ['Arrival9:30am', 'Arrival1:10pm'] , ['Layover: 1h 15m in Mexico City'])) #10/10
@@ -118,14 +116,83 @@ arri = ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am']
 layo = ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas']
 
 
+start_date1 = '02-27-2023'#'Jan 4'
+arri1 = ['Arrival1:00am', 'Arrival10:21am']
+layo1 = ['Layover: 5h 30m in New York']
+other1 = ['JFK']#['Arrives Tue, Feb 28']
+cities1 = ['SALJFK', 'JFKPAP']
+cities2 = ['SALJFK', 'JFKPAP', 'PAPSJU', 'SJUMIA']
+cities3 = ['SAL','JFK', 'JFK','PAP', 'PAP','SJU', 'SJU','MIA']
+
+other2 = ['JFK', 'SJU'] #expected indexes: 1 3
+
+#print([re.findall(other1[0], x) for x in cities1])
+print(re.findall(other1[0], "".join(cities1)))
+print(re.findall(other1[0], "".join(cities2)))
+
+from collections import Counter
+
+# cntr = Counter(cities3)
+#print("".join(cities3)) #len(re.findall('SAL', cities3))
+# print(cntr['SJU'])
+# cnt = Counter('123111')
+# print(cnt['1'])
+
+
+
+#this function accepts parameters:
+#list → ['SAL','JFK', 'JFK','PAP', 'PAP','SJU', 'SJU','MIA'] Each city!
+#list → ['JFK', 'SJU'] Cities in which next flight starts on following day
+#returns: [0, 1, 0, 1, 0] a list in which the '1' represent where a day-change occurs
+#idea is to update next_day_1() by adding a + timedelta(day=int(newdays[i]))
+
+
+
+#Now,this one below may not be the cleanest regex BUT gets the job done:
+#    '...\).*\n\nArrives'
+
+def newday_indicator(each_city, flag):
+    additional_dates = []
+
+    nodupe = [] #each city appears a single time
+    for x in each_city:
+        if x not in nodupe:
+            nodupe.append(x)
+
+
+    for x in nodupe:
+        #print(each_city.count(x))
+
+        #puts a +1 on every index at which a day-change occurs
+        if x in flag:
+            additional_dates.append(1)
+        else:
+            additional_dates.append(0)
+
+    return additional_dates
+
+
+
+print(newday_indicator(cities3, other1))
+
+
+
 print(next_day_1(start_date, arri , layo))
+print(next_day_1(start_date1, arri1 , layo1))
+
+
+
+
+
 
 #print(datetime.now())
 #print(datetime.now() + timedelta(hours=int('08')))
 
 ['4Jan', '5Jan', '5Jan']
 
-
+#Arrives -------increase a counter and add a whole DAY if for each ---['Arrives Tue, Feb 28']
+#---------------- this below catches airport after which date-change occurs. Works fine on regexr.com
+#...\).*\n\nArrives
 
 # arrivals = ['Arrival9:30am', 'Arrival1:10pm']
 # onelin = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals]
