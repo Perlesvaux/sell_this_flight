@@ -86,9 +86,11 @@ def next_day(first,  AH, AM,  LH, LM):
 
 def next_day_1(first,  arrivals,  layovers):
     initial = datetime.strptime(first, '%m-%d-%Y') #DATE
+    _arrivals = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals] #['09:30', '13:10'] from ['Arrival9:30am', 'Arrival1:10pm']
+
     posterior = [] #departure date of each following flight
 
-    _arrivals = [re.findall('Arrival.*\d+', x)[0].strip('Arrival') for x in arrivals] #[30, 10]
+    #_arrivals = [re.findall('Arrival.*\d+', x)[0].strip('Arrival') for x in arrivals] #[30, 10]
     AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]
     AM= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
 
@@ -102,7 +104,28 @@ def next_day_1(first,  arrivals,  layovers):
 
     return posterior
 
-print(next_day_1(test1, ['Arrival9:30am', 'Arrival13:10pm'] , ['Layover: 1h 15m in Mexico City']))
+print(next_day_1(test1, ['Arrival9:30am', 'Arrival1:10pm'] , ['Layover: 1h 15m in Mexico City']))
+
+
+
+
+arrivals = ['Arrival9:30am', 'Arrival1:10pm']
+onelin = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals]
+print(onelin)
+
+# testing = [re.findall("\d+:\d+am|\d+:\d+pm", x)[0] for x in testList] #['9:30am', '1:10pm']
+# print(testing)
+#
+# in_time1 = datetime.strptime(testing[0],"%I:%M%p")
+# in_time2 = datetime.strptime(testing[1],"%I:%M%p")
+# print(in_time1)
+# print(in_time2)
+#
+# out_time1 = datetime.strftime(in_time1, "%H:%M")
+# out_time2 = datetime.strftime(in_time2, "%H:%M")
+# print(out_time1)
+# print(out_time2)
+#
 
 
 
@@ -111,6 +134,16 @@ print(next_day_1(test1, ['Arrival9:30am', 'Arrival13:10pm'] , ['Layover: 1h 15m 
 
 
 
+
+
+"""
+from datetime import datetime
+m2 = '1:35 PM'
+in_time = datetime.strptime(m2, "%I:%M %p")
+out_time = datetime.strftime(in_time, "%H:%M")
+print(out_time)
+13:35
+"""
 
 
 
