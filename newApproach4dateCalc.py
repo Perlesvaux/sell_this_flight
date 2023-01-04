@@ -39,8 +39,8 @@ departure_date = '01-02-2023' #STRING
 initial = datetime.strptime(departure_date, '%m-%d-%Y') #DATE
 next = datetime.strftime(initial + timedelta(hours=17, minutes=50) + timedelta(hours=12, minutes=20), '%m-%d-%Y') #=Sum of date, arrival & connection time
 
-print(initial)
-print(next)
+# print(initial)
+# print(next)
 
 
 #origin + arrival + connection
@@ -61,14 +61,14 @@ arr_m= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
 
 layover_h = [re.findall('\d+', x)[0] for x in ['Layover: 1h 15m in Mexico City']]
 layover_m = [re.findall('\d+', x)[1] for x in ['Layover: 1h 15m in Mexico City']]
-print(arr_h)
-print(arr_m)
-print(layover_h)
-print(layover_m)
+# print(arr_h)
+# print(arr_m)
+# print(layover_h)
+# print(layover_m)
 
 
 
-"TODO: ..."
+"TODO: turn 04jan into a date. i.e.: '01-04-2023'"
 
 def next_day(first,  AH, AM,  LH, LM):
     initial = datetime.strptime(first, '%m-%d-%Y') #DATE
@@ -97,21 +97,39 @@ def next_day_1(first,  arrivals,  layovers):
     LH = [re.findall('\d+', x)[0] for x in layovers]
     LM = [re.findall('\d+', x)[1] for x in layovers]
 
-
+    # print(LH)
+    # print(LM)
+    # print(AH)
+    # print(AM)
 
     for i, val in enumerate(layovers): #limit is set by number of connections
         posterior.append(datetime.strftime(initial + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%m-%d-%Y')) #=Sum of date, arrival & connection time
+        #initial = posterior[i]
+        initial = datetime.strptime(posterior[i], '%m-%d-%Y')
+        #print(f"{AH[i]} {AM[i]}; {LH[i]} {LM[i]}")
 
+    posterior.sort()
     return posterior
 
-print(next_day_1(test1, ['Arrival9:30am', 'Arrival1:10pm'] , ['Layover: 1h 15m in Mexico City']))
+# print(next_day_1(test1, ['Arrival9:30am', 'Arrival1:10pm'] , ['Layover: 1h 15m in Mexico City'])) #10/10
+
+start_date = '01-04-2023'#'Jan 4'
+arri = ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am']
+layo = ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas']
+
+
+print(next_day_1(start_date, arri , layo))
+
+#print(datetime.now())
+#print(datetime.now() + timedelta(hours=int('08')))
+
+['4Jan', '5Jan', '5Jan']
 
 
 
-
-arrivals = ['Arrival9:30am', 'Arrival1:10pm']
-onelin = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals]
-print(onelin)
+# arrivals = ['Arrival9:30am', 'Arrival1:10pm']
+# onelin = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals]
+# print(onelin)
 
 # testing = [re.findall("\d+:\d+am|\d+:\d+pm", x)[0] for x in testList] #['9:30am', '1:10pm']
 # print(testing)
