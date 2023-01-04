@@ -68,7 +68,7 @@ print(layover_m)
 
 
 
-"TODO: reduce params to only 3 → str, list, list"
+"TODO: ..."
 
 def next_day(first,  AH, AM,  LH, LM):
     initial = datetime.strptime(first, '%m-%d-%Y') #DATE
@@ -79,10 +79,30 @@ def next_day(first,  AH, AM,  LH, LM):
 
     return posterior
 
-print(next_day(test1, arr_h, arr_m, layover_h, layover_m))
+
+
+#print(next_day(test1, arr_h, arr_m, layover_h, layover_m))
+
+
+def next_day_1(first,  arrivals,  layovers):
+    initial = datetime.strptime(first, '%m-%d-%Y') #DATE
+    posterior = [] #departure date of each following flight
+
+    _arrivals = [re.findall('Arrival.*\d+', x)[0].strip('Arrival') for x in arrivals] #[30, 10]
+    AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]
+    AM= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
+
+    LH = [re.findall('\d+', x)[0] for x in layovers]
+    LM = [re.findall('\d+', x)[1] for x in layovers]
 
 
 
+    for i, val in enumerate(layovers): #limit is set by number of connections
+        posterior.append(datetime.strftime(initial + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%m-%d-%Y')) #=Sum of date, arrival & connection time
+
+    return posterior
+
+print(next_day_1(test1, ['Arrival9:30am', 'Arrival13:10pm'] , ['Layover: 1h 15m in Mexico City']))
 
 
 
