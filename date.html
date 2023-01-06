@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Date Adder</title>
+</head>
+
+<body>
+    <h1>Date Adder</h1>
+
+    <input type='date'>
+    <input type='number' min='0' max='3'>
+    <input type='button' value='Calculate Arrival Date'>
+    <section></section>
+
+    <script>
+        'use strict'
+
+        const date_input = document.querySelector('[type=date]')
+        const days_of_commuting = document.querySelector('[type=number]')
+        const calculate_btn = document.querySelector('[type=button]')
+        const results = document.querySelector('section')
+
+        const calculate_arrival_date = () => {
+
+            if (date_input.value === '') {
+                return 'Error: No departure date supplied!'
+            }
+
+            // If you don't say how many days to add, days_of_commuting.value is '', which will be converted to 0 right below, so no worries.
+
+            const days_until_arrival = Number(days_of_commuting.value)
+
+            // ! In the next code line, if you don't specify a time, the Date constructor thinks its input string represents a date in UTC instead of your local time. Why that would be bad?:
+
+            // If you enter december 31 in the calendar, when it gets converted to a date below, it would represent hour 0 (12 AM) of december 31 UTF, which is hour 18 (6 PM) of december 30 in our local time. The problem is that setDate(), used below, alters the LOCAL TIME DAY, so if you add 1 day of travel, you add it to december 30 (not to december 31 which was your input), thus you'd get the absurd output that if you depart on december 31 and arrive after 1 day, you arrive on the same day (december 31)...
+
+            const arrival_date = new Date(`${date_input.value}T01:00`)
+
+
+            arrival_date.setDate(
+                arrival_date.getDate()
+                + days_until_arrival
+            )
+
+            // In case you think you entered a number when you didn't, I'll let you know if no days were added:
+
+            return days_until_arrival === 0
+                ? `${arrival_date.toDateString()} (no days added!)`
+                : arrival_date.toDateString()
+        }
+
+        calculate_btn.addEventListener('click', () => {
+            // This function creates a 'p' element with the date calculation result, and iserts it at the end of the section element to form a log.
+
+            const result = document.createElement('p')
+
+            result.innerText = calculate_arrival_date()
+
+            results.insertAdjacentElement('beforeend', result)
+        })
+
+
+
+    </script>
+</body>
+
+</html>
