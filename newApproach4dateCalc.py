@@ -8,29 +8,29 @@ import re
 #print(datetime.strptime('01-02-2023', '%m-%d-%Y'))
 
 {"""
-departure_date = '01-02-2023'
-# arrival_time = '17:50'
-# time_left_4_next = '12:20'
-# arrival_of_next = '16:00'
-# time_left_4_other = '11:33'
+    departure_date = '01-02-2023'
+    # arrival_time = '17:50'
+    # time_left_4_next = '12:20'
+    # arrival_of_next = '16:00'
+    # time_left_4_other = '11:33'
 
-#converting STRING into DATE
-initial = (datetime.strptime(departure_date, '%m-%d-%Y'))
-print(initial)
-_initinal = initial + timedelta(hours=17, minutes=50)
-print(_initinal)
-next_flight = _initinal + timedelta(hours=12, minutes=20)
-print(next_flight)
+    #converting STRING into DATE
+    initial = (datetime.strptime(departure_date, '%m-%d-%Y'))
+    print(initial)
+    _initinal = initial + timedelta(hours=17, minutes=50)
+    print(_initinal)
+    next_flight = _initinal + timedelta(hours=12, minutes=20)
+    print(next_flight)
 
-#turning DATE into STRING (i.e.: to remove hours + mins)
-str_next_flight = datetime.strftime(next_flight, '%m-%d-%Y')
-#... then STRING into DATE again! LOL
-next_flight_departure = datetime.strptime(str_next_flight, '%m-%d-%Y')
-print(next_flight_departure)
-_next_flight_departure = next_flight_departure + timedelta(hours=16, minutes=0)
-print(_next_flight_departure)
-other_flight = _next_flight_departure + timedelta(hours=11, minutes=33)
-print(other_flight)
+    #turning DATE into STRING (i.e.: to remove hours + mins)
+    str_next_flight = datetime.strftime(next_flight, '%m-%d-%Y')
+    #... then STRING into DATE again! LOL
+    next_flight_departure = datetime.strptime(str_next_flight, '%m-%d-%Y')
+    print(next_flight_departure)
+    _next_flight_departure = next_flight_departure + timedelta(hours=16, minutes=0)
+    print(_next_flight_departure)
+    other_flight = _next_flight_departure + timedelta(hours=11, minutes=33)
+    print(other_flight)
 """}
 
 
@@ -52,6 +52,12 @@ next = datetime.strftime(initial + timedelta(hours=17, minutes=50) + timedelta(h
 ['Arrival9:30am', 'Arrival1:10pm']
 ['Departure7:00am', 'Departure10:45am']
 ['Layover: 1h 15m in Mexico City']
+
+
+
+#Converting strings '13jan', '09dec', '22sep' --> into: <class 'datetime.datetime'> 
+_tempdate = ['12Jan', '12Jan'] #[0] —12jan2023
+_date_ = datetime.strptime(f"{_tempdate[0]}{datetime.now().year}", '%d%b%Y')
 
 
 test1 = '01-02-2023'
@@ -85,7 +91,8 @@ def next_day(first,  AH, AM,  LH, LM):
 
 
 def next_day_1(first,  arrivals,  layovers):
-    initial = datetime.strptime(first, '%m-%d-%Y') #DATE
+    #initial = datetime.strptime(first, '%m-%d-%Y') #DATE
+    initial = datetime.strptime(f"{first}{datetime.now().year}", '%b %d%Y')
     _arrivals = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals] #['09:30', '13:10'] from ['Arrival9:30am', 'Arrival1:10pm']
 
     posterior = [] #departure date of each following flight
@@ -111,12 +118,12 @@ def next_day_1(first,  arrivals,  layovers):
 
 # print(next_day_1(test1, ['Arrival9:30am', 'Arrival1:10pm'] , ['Layover: 1h 15m in Mexico City'])) #10/10
 
-start_date = '01-04-2023'#'Jan 4'
+start_date = 'Jan 4' #'01-04-2023'#'Jan 4'
 arri = ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am']
 layo = ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas']
 
 
-start_date1 = '02-27-2023'#'Jan 4'
+start_date1 = 'Jan 4' #'02-27-2023'#'Jan 4'
 arri1 = ['Arrival1:00am', 'Arrival10:21am']
 layo1 = ['Layover: 5h 30m in New York']
 other1 = ['JFK']#['Arrives Tue, Feb 28']
