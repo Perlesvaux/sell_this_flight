@@ -719,11 +719,21 @@ class sell_this_flight(object):
             return final
 
 
-    def ordered_dates(self, first,  arrivals,  layovers, cities, nextday_departures):
+    def ordered_dates(self):
 
         """
             TODO: add shit here, idk xD
         """
+
+        first, arrivals,  layovers, cities, nextday_departures = self._day1, self._arrival, self._layovers, self._cities, self._date2
+        
+            
+
+
+
+
+
+
 
         additional_dates = []
 
@@ -784,12 +794,12 @@ class sell_this_flight(object):
             # print(self._cities )
             # print(self._date2)
             
-        dates = self.ordered_dates(
-            self._day1,
-            self._arrival,
-            self._layovers,
-            self._cities, 
-            self._date2)
+        # dates = self.ordered_dates(
+        #     self._day1,
+        #     self._arrival,
+        #     self._layovers,
+        #     self._cities, 
+        #     self._date2)
             
             
             
@@ -803,7 +813,7 @@ class sell_this_flight(object):
 
         _long_sell_format = []
         for i, val in enumerate(self.ordered_cos()):
-            _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {dates[i]} {self.ordered_citypairs()[i]} 1")
+            _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {self.ordered_dates()[i]} {self.ordered_citypairs()[i]} 1")
 
         _final_string = "\n".join(_long_sell_format)
 
@@ -844,6 +854,7 @@ if __name__=="__main__":
     # print(sold3rd._arrival)
     # print(sold3rd._departure)
     print(sold3rd.result())
+    print(sold3rd.ordered_dates())
 
     # _test2 = sell_this_flight(vuelo_3stop)
     # print(_test2.result())
