@@ -40,17 +40,17 @@ _output = Element("output")
 
 
 def count(*args, **kwargs):
-  print('el pepe :D')
-  number = len(_text.value)
-  _output.write(number)
+    print('el pepe :D')
+    number = len(_text.value)
+    _output.write(number)
 
 def clearing(*args, **kwargs):
-  _text.clear()
-  _output.clear()
-  _OP.clear()
+    _text.clear()
+    _output.clear()
+    _OP.clear()
 
 def sech(*args, **kwargs):
-  _output.write('y ahora todo cambio D:')
+    _output.write('y ahora todo cambio D:')
 
 
 import re
@@ -65,11 +65,13 @@ class sell_this_flight(object):
     #//Regex selectors!
     flight = "flight\n.+\d"
     cos = "\([a-zA-Z]\)"
-    date2 = 'Arrives.*[A-Z][a-z][a-z][ ]\d+'
+    date2 = "\(...\)\n\nA.*"#'Arrives.*[A-Z][a-z][a-z][ ]\d+'
     date1 = '•.*[A-Z][a-z][a-z][ ]\d+'
     airports = "[A-Z][A-Z][A-Z](?=\))"
     re_departure = "Departure\d+:\d+[a-z]+"
     re_arrival = "Arrival\d+:\d+[a-z]+"
+    layovers = "Layover.*"
+    
     IATA_airlines = {
         "ABX Air":'GB',
         "Aegean Airlines":'A3',
@@ -179,6 +181,7 @@ class sell_this_flight(object):
         "Cyprus Airways":'CY',
         "Czech Airlines":'OK',
         "Delta Air Lines":'DL',
+        "Delta":'DL',
         "DHL Air":'D0',
         "DHL Aviation":'ES',
         "Eastern Airlines":'2D',
@@ -337,6 +340,7 @@ class sell_this_flight(object):
         "Ukraine International Airlines":'PS',
         "UNI AIR":'B7',
         "United Airlines":'UA',
+        "United":'UA',
         "UPS Airlines":'5X',
         "Ural Airlines":'U6',
         "Urumqi Air":'UQ',
@@ -364,17 +368,19 @@ class sell_this_flight(object):
 
 
 
-
     def __init__(self, schedule):
-        #//Each raw component!
+    #//Each raw component!
         self._flight = re.findall(self.flight, schedule)
         self._cos = re.findall(self.cos, schedule)
-        self._date2 = re.findall(self.date2, schedule)
+        #self._date2 = re.findall(self.date2, schedule)
+        self._date2 = [re.findall('[A-Z][A-Z][A-Z]', x)[0] for x in re.findall(self.date2, schedule)]
         self._date1 = re.findall(self.date1, schedule)
         self._cities = re.findall(self.airports, schedule)
         self._departure = re.findall(self.re_departure, schedule)#[0].strip("Arrival")
         self._arrival = re.findall(self.re_arrival, schedule)#[0].strip("Arrival")
-
+        self._layovers = re.findall(self.layovers, schedule)
+        self._day1 = re.findall('[A-Z][a-z][a-z] \d+', self._date1[0])[0] #print (day1) #Jan 4
+        
 
 
     def containsPM(self, time12h_raw):
@@ -432,52 +438,106 @@ class sell_this_flight(object):
         return [f"{self._cities[i]}{self._cities[i+1]}" for i in range(0, len(self._cities), 2)]
 
 
-    #def elpepe(self): return ':v'
+    def ordered_dates(self):
+        today = 0
+        tomorrow = 0
+        more=[self.check_MCT(self._arrival[i], self._departure[i+1]) for i in range(0, len(self._arrival)-1, 2)] #added a "-1"
+
+        for x in more:
+            if x == True:
+                today += 1
+
+        day1 = re.findall('[A-Z][a-z][a-z] \d+', self._date1[0])[0] #print (day1) #Jan 4
+        day1_EX = datetime.strptime(day1, '%b %d') #print(day1_EX) #1900-01-04 00:00:00
+
+        for x in self._date2: tomorrow+=1
+
+        deff = []
+        #print(today, tomorrow)
+
+        deff.append(day1_EX)
+        for x in range(today):
+            deff.append(day1_EX)
+
+        if tomorrow > 0:
+            for x in range(tomorrow):
+                deff.append(day1_EX + timedelta(days=1))
+
+
+
+        "12Jan 12Jan 13Jan"
+
+
+        final = []
+        for x in deff:
+            final.append(x.strftime('%d%b').zfill(5))
+
+        final.sort()
+        return final
 
 
     def ordered_dates(self):
-            today = 0
-            tomorrow = 0
-            more=[self.check_MCT(self._arrival[i], self._departure[i+1]) for i in range(0, len(self._arrival)-1, 2)] #added a "-1"
 
-            for x in more:
-                if x == True:
-                    today += 1
+        """
+            TODO: add shit here, idk xD
+        """
 
-            day1 = re.findall('[A-Z][a-z][a-z] \d+', self._date1[0])[0] #print (day1) #Jan 4
-            day1_EX = datetime.strptime(day1, '%b %d') #print(day1_EX) #1900-01-04 00:00:00
+        first, arrivals,  layovers, cities, nextday_departures = self._day1, self._arrival, self._layovers, self._cities, self._date2
 
-            for x in self._date2: tomorrow+=1
+        additional_dates = []
 
-            deff = []
-            #print(today, tomorrow)
-
-            deff.append(day1_EX)
-            for x in range(today):
-                deff.append(day1_EX)
-
-            if tomorrow > 0:
-                for x in range(tomorrow):
-                    deff.append(day1_EX + timedelta(days=1))
+        nodupe = [] #each city appears a single time
+        for x in cities:
+            if x not in nodupe:
+                nodupe.append(x)
 
 
+        for x in nodupe:
 
-            "12Jan 12Jan 13Jan"
+            #puts a +1 on every index at which a day-change occurs #[0, 1, 0]
+            if x in nextday_departures:
+                additional_dates.append(1)
+            else:
+                additional_dates.append(0)
+        
+        
+        additional_dates.pop(0)
+
+        
+
+        initial = datetime.strptime(f"{first}{datetime.now().year}", '%b %d%Y')
+        _arrivals = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals] #['09:30', '13:10'] from ['Arrival9:30am', 'Arrival1:10pm']
 
 
-            final = []
-            for x in deff:
-                final.append(x.strftime('%d%b').zfill(5))
+        definitive = []
+        posterior = [] #departure date of each following flight
 
-            final.sort()
-            return final
+        definitive.append(datetime.strftime(initial, '%d%b'))
+
+
+        AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]
+        AM= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
+
+        LH = [re.findall('\d+', x)[0] for x in layovers]
+        LM = [re.findall('\d+', x)[1] for x in layovers]
+
+        for i, val in enumerate(layovers): #limit is set by number of connections
+            posterior.append(datetime.strftime(initial + timedelta(days=int(additional_dates[i])) + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%d%b')) #=Sum of date, arrival & connection time
+            initial = datetime.strptime(posterior[i], '%d%b') #Next iteration's "initial" is updated
+
+        #posterior.sort() #I think it's useless here...
+        
+        definitive.extend(posterior)
+        return definitive
+
+
 
     def result(self):
-        #return f"ss {self.ordered_flights()} {self.ordered_cos()} {self.ordered_dates()} {self.ordered_citypairs()} 1"
 
         _long_sell_format = []
         for i, val in enumerate(self.ordered_cos()):
             _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {self.ordered_dates()[i]} {self.ordered_citypairs()[i]} 1")
+
         _final_string = "\n".join(_long_sell_format)
 
         return(_final_string)
@@ -503,15 +563,15 @@ _OP = Element("OP")
 
 
 def sell(*args, **kwargs):
-  #_output.write(sell_this_flight(_text.value).result())
-  maozedong = sell_this_flight(_text.value).result()
+    #_output.write(sell_this_flight(_text.value).result())
+    maozedong = sell_this_flight(_text.value).result()
 
 
   #_OP.innerText = maozedong
   #_OP.element.innerText = maozedong
   #pyscript.write('test-output', text)
   #pyscript.write('OP', maozedong)
-  _OP.write(maozedong)
+    _OP.write(maozedong)
 
 
 
