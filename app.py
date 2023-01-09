@@ -719,7 +719,7 @@ class sell_this_flight(object):
             return final
 
 
-    def next_day(self, first,  arrivals,  layovers, cities, nextday_departures):
+    def ordered_dates(self, first,  arrivals,  layovers, cities, nextday_departures):
 
         """
             TODO: add shit here, idk xD
@@ -771,7 +771,7 @@ class sell_this_flight(object):
 
 
     def result(self):
-            #  next_day(
+            #  ordered_dates(
             #     'Jan 4',
             #     ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am'],
             #     ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas'],
@@ -784,7 +784,7 @@ class sell_this_flight(object):
             # print(self._cities )
             # print(self._date2)
             
-        dates = self.next_day(
+        dates = self.ordered_dates(
             self._day1,
             self._arrival,
             self._layovers,
