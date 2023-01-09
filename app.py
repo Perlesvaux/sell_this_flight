@@ -12,7 +12,7 @@ class sell_this_flight(object):
     #//Regex selectors!
     flight = "flight\n.+\d"
     cos = "\([a-zA-Z]\)"
-    date2 = 'Arrives.*[A-Z][a-z][a-z][ ]\d+'
+    date2 = "\(...\)\n\nA.*"#'Arrives.*[A-Z][a-z][a-z][ ]\d+'
     date1 = '•.*[A-Z][a-z][a-z][ ]\d+'
     airports = "[A-Z][A-Z][A-Z](?=\))"
     re_departure = "Departure\d+:\d+[a-z]+"
@@ -613,7 +613,8 @@ class sell_this_flight(object):
     #//Each raw component!
         self._flight = re.findall(self.flight, schedule)
         self._cos = re.findall(self.cos, schedule)
-        self._date2 = re.findall(self.date2, schedule)
+        #self._date2 = re.findall(self.date2, schedule)
+        self._date2 = [re.findall('[A-Z][A-Z][A-Z]', x)[0] for x in re.findall(self.date2, schedule)]
         self._date1 = re.findall(self.date1, schedule)
         self._cities = re.findall(self.airports, schedule)
         self._departure = re.findall(self.re_departure, schedule)#[0].strip("Arrival")
@@ -726,14 +727,6 @@ class sell_this_flight(object):
         """
 
         first, arrivals,  layovers, cities, nextday_departures = self._day1, self._arrival, self._layovers, self._cities, self._date2
-        
-            
-
-
-
-
-
-
 
         additional_dates = []
 
@@ -750,8 +743,12 @@ class sell_this_flight(object):
                 additional_dates.append(1)
             else:
                 additional_dates.append(0)
-            
+        
+        print(nextday_departures)
+        print(additional_dates)
         additional_dates.pop(0)
+
+        
 
         initial = datetime.strptime(f"{first}{datetime.now().year}", '%b %d%Y')
         _arrivals = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals] #['09:30', '13:10'] from ['Arrival9:30am', 'Arrival1:10pm']
@@ -781,35 +778,6 @@ class sell_this_flight(object):
 
 
     def result(self):
-            #  ordered_dates(
-            #     'Jan 4',
-            #     ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am'],
-            #     ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas'],
-            #     ['SAL','JFK', 'JFK','PAP', 'PAP','SJU', 'SJU','MIA'],
-            #     ['JFK'])    
-
-            # print(self._day1)
-            # print(self._arrival )
-            # print(self._layovers)
-            # print(self._cities )
-            # print(self._date2)
-            
-        # dates = self.ordered_dates(
-        #     self._day1,
-        #     self._arrival,
-        #     self._layovers,
-        #     self._cities, 
-        #     self._date2)
-            
-            
-            
-            
-            
-            # print(self.ordered_flights())
-            # print(self._cos )
-            # print(self._date1 )
-            # print(self._departure )
-
 
         _long_sell_format = []
         for i, val in enumerate(self.ordered_cos()):
@@ -883,9 +851,6 @@ if __name__=="__main__":
     # print(_test_3.ordered_cos())
     # print(_test_3.ordered_citypairs())
     #print(_test_3.ordered_dates())
-
-
-
 
 
     # _test1 = sell_this_flight(vuelo_con_escala)
