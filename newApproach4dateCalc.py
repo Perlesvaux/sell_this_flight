@@ -33,7 +33,7 @@ def next_day(first,  arrivals,  layovers, cities, nextday_departures):
     definitive = []
     posterior = [] #departure date of each following flight
 
-    definitive.append(datetime.strftime(initial, '%b %d'))
+    definitive.append(datetime.strftime(initial, '%d%b'))
 
 
     AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]

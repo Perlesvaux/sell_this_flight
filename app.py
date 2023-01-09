@@ -17,6 +17,7 @@ class sell_this_flight(object):
     airports = "[A-Z][A-Z][A-Z](?=\))"
     re_departure = "Departure\d+:\d+[a-z]+"
     re_arrival = "Arrival\d+:\d+[a-z]+"
+    layovers = "Layover.*"
 
 
     {"""
@@ -609,7 +610,7 @@ class sell_this_flight(object):
 
 
     def __init__(self, schedule):
-        #//Each raw component!
+    #//Each raw component!
         self._flight = re.findall(self.flight, schedule)
         self._cos = re.findall(self.cos, schedule)
         self._date2 = re.findall(self.date2, schedule)
@@ -617,7 +618,9 @@ class sell_this_flight(object):
         self._cities = re.findall(self.airports, schedule)
         self._departure = re.findall(self.re_departure, schedule)#[0].strip("Arrival")
         self._arrival = re.findall(self.re_arrival, schedule)#[0].strip("Arrival")
-
+        self._layovers = re.findall(self.layovers, schedule)
+        self._day1 = re.findall('[A-Z][a-z][a-z] \d+', self._date1[0])[0] #print (day1) #Jan 4
+        
 
 
     def containsPM(self, time12h_raw):
@@ -715,17 +718,98 @@ class sell_this_flight(object):
             final.sort()
             return final
 
+
+    def next_day(self, first,  arrivals,  layovers, cities, nextday_departures):
+
+        """
+            TODO: add shit here, idk xD
+        """
+
+        additional_dates = []
+
+        nodupe = [] #each city appears a single time
+        for x in cities:
+            if x not in nodupe:
+                nodupe.append(x)
+
+
+        for x in nodupe:
+
+            #puts a +1 on every index at which a day-change occurs #[0, 1, 0]
+            if x in nextday_departures:
+                additional_dates.append(1)
+            else:
+                additional_dates.append(0)
+            
+        additional_dates.pop(0)
+
+        initial = datetime.strptime(f"{first}{datetime.now().year}", '%b %d%Y')
+        _arrivals = [datetime.strftime(datetime.strptime(re.findall("\d+:\d+am|\d+:\d+pm", x)[0],"%I:%M%p"), "%H:%M") for x  in arrivals] #['09:30', '13:10'] from ['Arrival9:30am', 'Arrival1:10pm']
+
+
+        definitive = []
+        posterior = [] #departure date of each following flight
+
+        definitive.append(datetime.strftime(initial, '%d%b'))
+
+
+        AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]
+        AM= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
+
+        LH = [re.findall('\d+', x)[0] for x in layovers]
+        LM = [re.findall('\d+', x)[1] for x in layovers]
+
+        for i, val in enumerate(layovers): #limit is set by number of connections
+            posterior.append(datetime.strftime(initial + timedelta(days=int(additional_dates[i])) + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%d%b')) #=Sum of date, arrival & connection time
+            initial = datetime.strptime(posterior[i], '%d%b') #Next iteration's "initial" is updated
+
+        #posterior.sort() #I think it's useless here...
+        
+        definitive.extend(posterior)
+        return definitive
+
+
+
     def result(self):
-        #return f"ss {self.ordered_flights()} {self.ordered_cos()} {self.ordered_dates()} {self.ordered_citypairs()} 1"
+            #  next_day(
+            #     'Jan 4',
+            #     ['Arrival11:25am', 'Arrival8:11am', 'Arrival8:45am'],
+            #     ['Layover: 17h 35m in Newark', 'Layover: 14h 33m in Dallas'],
+            #     ['SAL','JFK', 'JFK','PAP', 'PAP','SJU', 'SJU','MIA'],
+            #     ['JFK'])    
+
+            # print(self._day1)
+            # print(self._arrival )
+            # print(self._layovers)
+            # print(self._cities )
+            # print(self._date2)
+            
+        dates = self.next_day(
+            self._day1,
+            self._arrival,
+            self._layovers,
+            self._cities, 
+            self._date2)
+            
+            
+            
+            
+            
+            # print(self.ordered_flights())
+            # print(self._cos )
+            # print(self._date1 )
+            # print(self._departure )
+
 
         _long_sell_format = []
         for i, val in enumerate(self.ordered_cos()):
-            _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {self.ordered_dates()[i]} {self.ordered_citypairs()[i]} 1")
+            _long_sell_format.append(f"ss {self.ordered_flights()[i]} {self.ordered_cos()[i]} {dates[i]} {self.ordered_citypairs()[i]} 1")
 
         _final_string = "\n".join(_long_sell_format)
 
         return(_final_string)
 
+        
 
 
 
@@ -738,7 +822,8 @@ class sell_this_flight(object):
 
 
 
-            #return [x.replace(' ', '') for x in dates]
+
+            
 
 
 
@@ -751,13 +836,14 @@ if __name__=="__main__":
     # print(sold2nd.ordered_dates())
 
     sold3rd = sell_this_flight(vuelo_con_escala)
+    #print(sold3rd.result())
+    # print(sold3rd.ordered_flights())
+    # print(sold3rd.ordered_cos())
+    # print(sold3rd.ordered_citypairs())
+    # print(sold3rd.ordered_dates())
+    # print(sold3rd._arrival)
+    # print(sold3rd._departure)
     print(sold3rd.result())
-    print(sold3rd.ordered_flights())
-    print(sold3rd.ordered_cos())
-    print(sold3rd.ordered_citypairs())
-    print(sold3rd.ordered_dates())
-    print(sold3rd._arrival)
-    print(sold3rd._departure)
 
     # _test2 = sell_this_flight(vuelo_3stop)
     # print(_test2.result())
@@ -766,25 +852,25 @@ if __name__=="__main__":
     # print(_test2.ordered_citypairs())
     # print(_test2.ordered_dates()) #should be ['12Jan', '12Jan', '12Jan']
 
-    _test_1=sell_this_flight(firefox) #fails because it displays flight as "flightAmerican Airlines" and this makes regex fail
+    #_test_1=sell_this_flight(firefox) #fails because it displays flight as "flightAmerican Airlines" and this makes regex fail
     #print(_test_1.result())
-    print(_test_1.ordered_flights())
-    print(_test_1.ordered_cos())
-    print(_test_1.ordered_citypairs())
-    print(_test_1.ordered_dates())
+    # print(_test_1.ordered_flights())
+    # print(_test_1.ordered_cos())
+    # print(_test_1.ordered_citypairs())
+    # print(_test_1.ordered_dates())
 
-    _test_2=sell_this_flight(vuelo_pap)
+    #_test_2=sell_this_flight(vuelo_pap)
     #print(_test_2.result())
-    print(_test_2.ordered_flights())
-    print(_test_2.ordered_cos())
-    print(_test_2.ordered_citypairs())
-    print(_test_2.ordered_dates())
+    # print(_test_2.ordered_flights())
+    # print(_test_2.ordered_cos())
+    # print(_test_2.ordered_citypairs())
+    # print(_test_2.ordered_dates())
 
-    _test_3=sell_this_flight(vuelo_exp_uk)
+    #_test_3=sell_this_flight(vuelo_exp_uk)
     #print(_test_2.result())
-    print(_test_3.ordered_flights())
-    print(_test_3.ordered_cos())
-    print(_test_3.ordered_citypairs())
+    # print(_test_3.ordered_flights())
+    # print(_test_3.ordered_cos())
+    # print(_test_3.ordered_citypairs())
     #print(_test_3.ordered_dates())
 
 
