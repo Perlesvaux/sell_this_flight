@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flts import vuelo_nonstop, vuelo_1stop, vuelo_con_escala, vuelo_3stop, vuelo_tbs, vuelo_longest, firefox, vuelo_pap, vuelo_exp_uk
+from flts import vuelo_nonstop, vuelo_1stop, vuelo_con_escala, vuelo_3stop, vuelo_tbs, vuelo_longest, firefox, vuelo_pap, vuelo_exp_uk, vuelo_cortito
 import re
 
 from datetime import datetime, date, timedelta
@@ -467,8 +467,15 @@ class sell_this_flight(object):
         AH= [re.findall('\d+:', x)[0].strip(':') for x in _arrivals]
         AM= [re.findall(':\d+', x)[0].strip(':') for x in _arrivals]
 
-        LH = [re.findall('\d+', x)[0] for x in layovers]
-        LM = [re.findall('\d+', x)[1] for x in layovers]
+        try:
+            LH = [re.findall('\d+', x)[0] for x in layovers]
+            LM = [re.findall('\d+', x)[1] for x in layovers]
+        except IndexError:
+            LH = ['0'] 
+            LM = [re.findall('\d+', x)[0] for x in layovers]
+
+
+        print(LH, LM)
 
         for i, val in enumerate(layovers): #limit is set by number of connections
             posterior.append(datetime.strftime(initial + timedelta(days=int(additional_dates[i])) + timedelta(hours=int(AH[i]), minutes=int(AM[i])) + timedelta(hours=int(LH[i]), minutes=int(LM[i])), '%d%b')) #=Sum of date, arrival & connection time
@@ -517,7 +524,8 @@ if __name__=="__main__":
     # print(sold2nd.ordered_citypairs())
     # print(sold2nd.ordered_dates())
 
-    sold3rd = sell_this_flight(vuelo_con_escala)
+    #sold3rd = sell_this_flight(vuelo_con_escala)
+    #print(sold3rd.ordered_dates())
     #print(sold3rd.result())
     # print(sold3rd.ordered_flights())
     # print(sold3rd.ordered_cos())
@@ -525,8 +533,75 @@ if __name__=="__main__":
     # print(sold3rd.ordered_dates())
     # print(sold3rd._arrival)
     # print(sold3rd._departure)
-    print(sold3rd.result())
-    print(sold3rd.ordered_dates())
+    #print(sold3rd.result())
+    #print(sold3rd.ordered_dates())
+
+    vc = sell_this_flight(vuelo_cortito)
+    print(vc.result())
+    #print(vc.ordered_dates())
+
+    osogei = sell_this_flight("""
+    San Salvador to New York
+    5:40am - 2:59pm (8h 19m, 1 stop)5:40am through 2:59pm (8h 19m, 1 stop)
+
+    American Airlines • Tue, Mar 21
+    Departure5:40am - San Salvador
+    El Salvador Intl. (SAL)
+
+    3h 39m flight
+    American Airlines 1408
+    Boeing 737-800WiFi, entertainment and power on this flight
+    Economy/Coach (N)
+    Arrival10:19am - Miami
+    Miami Intl. (MIA)
+
+    Layover: 1h 40m in Miami
+    Departure11:59am - Miami
+    Miami Intl. (MIA)
+
+    3h flight
+    American Airlines 1479
+    Boeing 737 MAX 8WiFi, entertainment and power on this flight
+    Economy/Coach (N)
+    Arrival2:59pm - New York
+    John F. Kennedy Intl. (JFK)
+
+    Hide details
+        """)
+    
+    print(osogei.result())
+
+    outlier = sell_this_flight("""
+    Los Angeles to Tampa
+    8:00am - 5:13pm (6h 13m, 1 stop)8:00am through 5:13pm (6h 13m, 1 stop)
+
+    American Airlines • Tue, Mar 21
+    Departure8:00am - Los Angeles
+    Los Angeles Intl. (LAX)
+
+    3h 1m flight
+    American Airlines 2459
+    Airbus A321WiFi, entertainment and power on this flight
+    Economy/Coach (V)
+    Arrival1:01pm - Dallas
+    Dallas-Fort Worth Intl. (DFW)
+
+    Layover: 54m in Dallas
+    Departure1:55pm - Dallas
+    Dallas-Fort Worth Intl. (DFW)
+
+    2h 18m flight
+    American Airlines 898
+    Airbus A321WiFi, entertainment and power on this flight
+    Economy/Coach (V)
+    Arrival5:13pm - Tampa
+    Tampa Intl. (TPA)
+
+    Hide details
+        """)
+
+    print(outlier.result())
+
 
     # _test2 = sell_this_flight(vuelo_3stop)
     # print(_test2.result())

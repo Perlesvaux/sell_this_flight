@@ -277,3 +277,32 @@ Heathrow (LHR)
 Arrives Thu, 9 Feb
 Hide details
 """
+
+vuelo_cortito = """
+Los Angeles to Tampa
+8:00am - 5:13pm (6h 13m, 1 stop)8:00am through 5:13pm (6h 13m, 1 stop)
+
+American Airlines • Tue, Mar 21
+Departure8:00am - Los Angeles
+Los Angeles Intl. (LAX)
+
+3h 1m flight
+American Airlines 2459
+Airbus A321WiFi, entertainment and power on this flight
+Economy/Coach (V)
+Arrival1:01pm - Dallas
+Dallas-Fort Worth Intl. (DFW)
+
+Layover: 54m in Dallas
+Departure1:55pm - Dallas
+Dallas-Fort Worth Intl. (DFW)
+
+2h 18m flight
+American Airlines 898
+Airbus A321WiFi, entertainment and power on this flight
+Economy/Coach (V)
+Arrival5:13pm - Tampa
+Tampa Intl. (TPA)
+
+Hide details
+"""
